@@ -16,26 +16,27 @@ class TotalNet(nn.Module):
             nn.Conv1d(32, 64, 5, padding=2),
             nn.BatchNorm1d(64),
             nn.MaxPool1d(11, stride=1),
-            nn.Flatten())  # torch.Size([64,5760])
+            nn.Flatten(),  # torch.Size([64,5760])
+            nn.Linear(5760, 200))
 
         self.FNet = nn.Sequential(
             nn.Linear(4, 100),
             nn.PReLU(),
-            nn.Linear(100, 960),
+            nn.Linear(100, 100),
             nn.PReLU(),
-            nn.Linear(960, 2000),
+            nn.Linear(100, 200),
             nn.PReLU())  # torch.Size([64,960])
 
         self.FinalNet = nn.Sequential(
-            nn.Linear(7760, 1000),
+            nn.Linear(400, 400),
             nn.PReLU(),
             nn.Dropout(p=0.2),
-            nn.Linear(1000, 1000),
+            nn.Linear(400, 400),
             nn.PReLU(),
-            nn.Linear(1000, 1000),
+            nn.Linear(400, 200),
             nn.PReLU(),
             nn.Dropout(p=0.2),
-            nn.Linear(1000, 100),
+            nn.Linear(200, 100),
             nn.PReLU(),
             nn.Linear(100, 2),
             nn.PReLU())  # torch.Size([64,2])

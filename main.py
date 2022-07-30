@@ -10,7 +10,7 @@ if __name__ == '__main__':
     y = 1  # 预测指标
     epoch = 50
     batch_size = 64
-    learning_rate = 3e-2
+    learning_rate = 3e-3
     device1 = torch.device("cuda")
     device2 = torch.device("cpu")
     model = TotalNet()  # 模型

@@ -99,7 +99,7 @@ class Folder(data.Dataset):
         #
         # return 0
         Standard_data = StandardScaler().fit_transform(self.data)
-        print(Standard_data)
+        # print(Standard_data)
         return Standard_data
 
 
