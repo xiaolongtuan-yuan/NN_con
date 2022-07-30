@@ -10,7 +10,7 @@ if __name__ == '__main__':
     y = 4  # 预测指标
     epoch = 500
     batch_size = 512
-    learning_rate = 3e-3
+    learning_rate = 3e-5
     device = torch.device("cuda")
 
     model = TotalNet()  # 模型
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", patience=10)
 
     total_dataset = Folder(index=y)
-    train_size = int(0.7 * len(total_dataset))
+    train_size = int(0.75 * len(total_dataset))
     valid_size = len(total_dataset) - train_size
     train_dataset, test_dataset = data.random_split(
         total_dataset, [train_size, valid_size]
@@ -59,7 +59,7 @@ if __name__ == '__main__':
             # print("input2": input, "target2": targets)
 
             outputs = model(inputs)
-            loss = loss_fn(outputs, targets)
+            loss, stds = loss_fn(outputs, targets)
 
             #  优化器优化模型
             optimizer.zero_grad()
@@ -70,6 +70,7 @@ if __name__ == '__main__':
             if total_train_step % 20 == 0:
                 print("训练次数：{}, Loss:{}".format(total_train_step, loss.item()))
                 writer.add_scalar("train_loss", loss.item(), total_train_step)
+                writer.add_histogram("train_Output_stds", stds, total_train_step)
 
         model.eval()
         with torch.no_grad():
@@ -83,7 +84,7 @@ if __name__ == '__main__':
                 targets = targets.to(device)
                 outputs = model(inputs)
 
-                loss = loss_fn(outputs, targets)
+                loss, stds = loss_fn(outputs, targets)
                 num += 1
                 total_test_loss += loss.item()
 
@@ -92,6 +93,7 @@ if __name__ == '__main__':
 
             print("测试集Loss：{}".format(avg_test_loss))
             writer.add_scalar("test_loss", avg_test_loss, i)
+            writer.add_histogram("test_Output_stds", stds, total_train_step)
 
     torch.save(model, "models/longtuan_y" + str(y) + ".pth")
     print("模型已保存！")
