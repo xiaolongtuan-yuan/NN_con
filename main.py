@@ -7,23 +7,23 @@ import torch
 import torch.nn as nn
 
 if __name__ == '__main__':
-    y = 1  # 预测指标
-    epoch = 50
-    batch_size = 64
+    y = 2  # 预测指标
+    epoch = 500
+    batch_size = 512
     learning_rate = 3e-3
-    device1 = torch.device("cuda")
-    device2 = torch.device("cpu")
+    device = torch.device("cuda")
+
     model = TotalNet()  # 模型
-    model = model.to(device1)
+    model = model.to(device)
     loss_fn = AvgStdLoss()
-    loss_fn = loss_fn.to(device1)
+    loss_fn = loss_fn.to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     # optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", patience=5)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", patience=10)
 
     total_dataset = Folder(index=y)
-    train_size = int(0.9 * len(total_dataset))
+    train_size = int(0.7 * len(total_dataset))
     valid_size = len(total_dataset) - train_size
     train_dataset, test_dataset = data.random_split(
         total_dataset, [train_size, valid_size]
@@ -52,9 +52,9 @@ if __name__ == '__main__':
         for j, (inputs, targets) in enumerate(train_loader):
 
             inputs = inputs.to(torch.float32)
-            inputs = inputs.to(device1)
+            inputs = inputs.to(device)
             targets = targets.to(torch.float32)
-            targets = targets.to(device1)
+            targets = targets.to(device)
 
             # print("input2": input, "target2": targets)
 
@@ -67,7 +67,7 @@ if __name__ == '__main__':
             nn.utils.clip_grad_norm_(model.parameters(), max_norm=3, norm_type=2)
             optimizer.step()
             total_train_step += 1
-            if total_train_step % 100 == 0:
+            if total_train_step % 20 == 0:
                 print("训练次数：{}, Loss:{}".format(total_train_step, loss.item()))
                 writer.add_scalar("train_loss", loss.item(), total_train_step)
 
@@ -78,9 +78,9 @@ if __name__ == '__main__':
             num = 0
             for j, (inputs, targets) in enumerate(test_loader):
                 inputs = inputs.to(torch.float32)
-                inputs = inputs.to(device1)
+                inputs = inputs.to(device)
                 targets = targets.to(torch.float32)
-                targets = targets.to(device1)
+                targets = targets.to(device)
                 outputs = model(inputs)
 
                 loss = loss_fn(outputs, targets)

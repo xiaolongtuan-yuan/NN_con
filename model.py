@@ -7,38 +7,35 @@ class TotalNet(nn.Module):
         super(TotalNet, self).__init__()
 
         self.NNet = nn.Sequential(
-            nn.Conv1d(2, 32, 5, padding=2),
-            nn.BatchNorm1d(32),
-            nn.MaxPool1d(11, stride=1),
-            nn.Conv1d(32, 32, 5, padding=2),
-            nn.BatchNorm1d(32),
-            nn.MaxPool1d(11, stride=1),
-            nn.Conv1d(32, 64, 5, padding=2),
-            nn.BatchNorm1d(64),
-            nn.MaxPool1d(11, stride=1),
-            nn.Flatten(),  # torch.Size([64,5760])
-            nn.Linear(5760, 200))
+            nn.Conv1d(2, 8, 5, padding=2),
+            # nn.BatchNorm1d(8),
+            # nn.MaxPool1d(11, stride=1),
+            # nn.Conv1d(8, 8, 5, padding=2),
+            # nn.BatchNorm1d(32),
+            # nn.MaxPool1d(11, stride=1),
+            nn.Conv1d(8, 8, 5, padding=2),
+            # nn.BatchNorm1d(64),
+            # nn.MaxPool1d(11, stride=1),
+            nn.Flatten())  # torch.Size([64,5760])
 
         self.FNet = nn.Sequential(
-            nn.Linear(4, 100),
-            nn.PReLU(),
-            nn.Linear(100, 100),
-            nn.PReLU(),
-            nn.Linear(100, 200),
+            nn.Linear(4, 50),
+            # nn.PReLU(),
+            # nn.Linear(50, 200),
+            # nn.PReLU(),
+            # nn.Linear(200, 300),
             nn.PReLU())  # torch.Size([64,960])
 
         self.FinalNet = nn.Sequential(
-            nn.Linear(400, 400),
+            nn.Linear(1010, 200),
             nn.PReLU(),
-            nn.Dropout(p=0.2),
-            nn.Linear(400, 400),
+            # nn.Linear(50, 20),
+            # nn.PReLU(),
+            nn.Linear(200, 50),
             nn.PReLU(),
-            nn.Linear(400, 200),
-            nn.PReLU(),
-            nn.Dropout(p=0.2),
-            nn.Linear(200, 100),
-            nn.PReLU(),
-            nn.Linear(100, 2),
+            # nn.Linear(50, 20),
+            # nn.PReLU(),
+            nn.Linear(50, 2),
             nn.PReLU())  # torch.Size([64,2])
 
     def forward(self, input):  # input = (64,248)
