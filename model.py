@@ -38,7 +38,7 @@ class TotalNet(nn.Module):
             nn.Linear(50, 2),
             nn.PReLU())  # torch.Size([64,2])
 
-    def forward(self, input):  # input = (64,248)
+    def forward(self, input):  # input = (64,244)
         Temp1 = input[:, 0:120]  # (64, 120)
         Temp2 = input[:, 120:240]  # (64, 120)
         Qualty = input[:, 240:]

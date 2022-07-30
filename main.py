@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 
 if __name__ == '__main__':
-    y = 2  # 预测指标
+    y = 4  # 预测指标
     epoch = 500
     batch_size = 512
     learning_rate = 3e-3
